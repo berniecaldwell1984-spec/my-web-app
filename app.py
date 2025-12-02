@@ -252,21 +252,3 @@ elif page == "LADOTD Resources":
     }
     for name, url in links.items():
         st.markdown(f"🔗 **[{name}]({url})**")
-```
-
-### Step 2: Upload it
-1.  Run the commands in your terminal:
-    ```powershell
-    git add app.py
-    git commit -m "Rewrite app in Python"
-    git push
-    ```
-
-### Step 3: Check requirements
-Make sure your `requirements.txt` includes these (if you haven't done this yet, do it now):
-1.  Open `requirements.txt`
-2.  Make sure it has:
-    ```text
-    streamlit
-    pandas
-    google-generativeai
