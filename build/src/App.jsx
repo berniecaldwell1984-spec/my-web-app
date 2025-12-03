@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 // --- CONFIGURATION ---
-// API Key Inserted
+// PASTE YOUR GEMINI API KEY HERE
 const API_KEY = "AIzaSyCjAeRb0J5KkUv_IqqStcbjzrr9TQ_S1Ro"; 
 
 // --- 1. ICONS ---
@@ -291,7 +291,6 @@ function DashboardView({ stats, setActiveTab, openModal }) {
           {/* DASHBOARD HEADER WITH LOGO */}
           <img src="/Gilchrist_Logo.png" alt="GILCHRIST CONSTRUCTION COMPANY" className="h-20 object-contain mb-2" 
                onError={(e) => { e.target.style.display='none'; e.target.nextSibling.style.display='block'; }} />
-          <h2 className="hidden text-3xl font-black text-white mb-1 uppercase tracking-tighter">GILCHRIST CONSTRUCTION COMPANY</h2>
           {/* UPDATED TITLE IN GREEN */}
           <p className="text-green-600 text-sm font-black tracking-widest uppercase">Quick Reference App</p>
         </div>
@@ -320,68 +319,6 @@ function DashboardView({ stats, setActiveTab, openModal }) {
     </div>
   );
 }
-
-function AIAssistantView() {
-  const [messages, setMessages] = useState([
-    { role: 'model', text: "Ready to assist, Bernie. I'm your Senior Field Engineer assistant. Need help with TR-202B specs, soil stabilization calculations, or asphalt yield factors?" }
-  ]);
-  const [input, setInput] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const chatEndRef = useRef(null);
-
-  // --- GEMINI API INTEGRATION ---
-  const handleSend = async () => {
-    if (!input.trim()) return;
-    const userMsg = input;
-    setInput('');
-    setMessages(prev => [...prev, { role: 'user', text: userMsg }]);
-    setIsLoading(true);
-
-    try {
-      const genAI = new GoogleGenerativeAI(API_KEY);
-      const model = genAI.getGenerativeModel({ 
-        model: "gemini-1.5-flash",
-        systemInstruction: "You are a Senior Field Engineer for Gilchrist Construction Company. You answer questions about civil engineering, construction materials (specifically Soil Cement, Lime, Asphalt, and Concrete), and LADOTD specifications (TR procedures). Be concise, professional, and direct. Do not use markdown bolding too much. Focus on the facts."
-      });
-      
-      const result = await model.generateContent(userMsg);
-      const response = result.response;
-      const text = response.text();
-      
-      setMessages(prev => [...prev, { role: 'model', text: text }]);
-    } catch (error) {
-      console.error("Gemini Error:", error);
-      setMessages(prev => [...prev, { role: 'model', text: "Error: " + error.message }]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-  // ------------------------------
-
-  useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
-
-  return (
-    <div className="h-[600px] flex flex-col bg-zinc-900 rounded-xl border border-zinc-800 overflow-hidden shadow-2xl">
-      <div className="p-4 border-b border-zinc-800 flex justify-between items-center bg-black"><h3 className="font-bold text-white text-sm uppercase tracking-wider">Field Engineer AI</h3></div>
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
-        {messages.map((msg, idx) => (
-          <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-            <div className={`max-w-[85%] p-4 rounded-2xl text-sm font-medium leading-relaxed ${msg.role === 'user' ? 'bg-green-600 text-white' : 'bg-zinc-800 text-zinc-300'}`}>{msg.text}</div>
-          </div>
-        ))}
-        {isLoading && <div className="flex justify-start"><div className="bg-zinc-800 p-3 rounded-2xl text-xs text-zinc-500 animate-pulse">Thinking...</div></div>}
-        <div ref={chatEndRef} />
-      </div>
-      <div className="p-4 border-t border-zinc-800 bg-black flex gap-2">
-          <input type="text" value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleSend()} className="flex-1 px-4 py-3 bg-zinc-950 border border-zinc-800 rounded-xl text-sm text-white font-bold focus:outline-none focus:border-green-600" placeholder="Ask about TR-418, density, or yield..." />
-          <button onClick={handleSend} disabled={isLoading} className="bg-green-600 text-white p-3 rounded-xl font-bold hover:bg-green-500 transition-colors disabled:opacity-50">SEND</button>
-      </div>
-    </div>
-  );
-}
-
 function SoilCalcView({ segments, addSegment, removeSegment, current, setCurrent }) {
   const fileInputRef = useRef(null);
 
@@ -447,16 +384,32 @@ function SoilCalcView({ segments, addSegment, removeSegment, current, setCurrent
 
       <div className="bg-zinc-900 border border-zinc-800 p-6 rounded-xl shadow-lg print:hidden">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+            
+            {/* --- THIS IS THE UPDATED SECTION FOR BUTTONS --- */}
             <div>
                  <label className="text-[10px] font-bold text-zinc-500 uppercase mb-1.5 block tracking-wide">MATERIAL</label>
                  <div className="flex border border-gray-300 rounded-lg overflow-hidden h-[46px]">
-                    <button onClick={() => setCurrent({...current, material: 'Cement'})} className={`flex-1 text-sm font-black uppercase transition-colors ${current.material === 'Cement' ? 'bg-green-600 text-white' : 'bg-white text-gray-500 hover:bg-gray-100'}`}>Cement</button>
-                    <button onClick={() => setCurrent({...current, material: 'Lime'})} className={`flex-1 text-sm font-black uppercase transition-colors ${current.material === 'Lime' ? 'bg-green-600 text-white' : 'bg-white text-gray-500 hover:bg-gray-100'}`}>Lime</button>
+                    <button 
+                        onClick={() => setCurrent({...current, material: 'Cement', density: 94})} 
+                        className={`flex-1 text-sm font-black uppercase transition-colors ${current.material === 'Cement' ? 'bg-green-600 text-white' : 'bg-white text-gray-500 hover:bg-gray-100'}`}
+                    >
+                        Cement
+                    </button>
+                    <button 
+                        onClick={() => setCurrent({...current, material: 'Lime', density: 35})} 
+                        className={`flex-1 text-sm font-black uppercase transition-colors ${current.material === 'Lime' ? 'bg-green-600 text-white' : 'bg-white text-gray-500 hover:bg-gray-100'}`}
+                    >
+                        Lime
+                    </button>
                  </div>
             </div>
+            {/* ----------------------------------------------- */}
+
             <SelectField label="PERCENTAGE" value={current.percent} onChange={(v) => setCurrent({...current, percent: parseFloat(v)})}>
                 {[3,4,5,6,7,8,9].map(n => <option key={n} value={n}>{n}%</option>)}
             </SelectField>
+            
+            {/* Density Input - Now updates automatically but can still be edited manually */}
             <InputField label="DRY DENSITY (PCF)" value={current.density} onChange={(v) => setCurrent({...current, density: v})} />
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4 p-4 bg-black rounded-lg border border-zinc-800">
@@ -855,6 +808,70 @@ function LADOTDResources() {
   );
 }
 
+function AIAssistantView() {
+  const [messages, setMessages] = useState([
+    { role: 'model', text: "Ready to assist, Bernie. I'm your Senior Field Engineer assistant. Need help with TR-202B specs, soil stabilization calculations, or asphalt yield factors?" }
+  ]);
+  const [input, setInput] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const chatEndRef = useRef(null);
+
+  // --- GEMINI API INTEGRATION ---
+  const handleSend = async () => {
+    if (!input.trim()) return;
+    const userMsg = input;
+    setInput('');
+    setMessages(prev => [...prev, { role: 'user', text: userMsg }]);
+    setIsLoading(true);
+
+    try {
+      if (!API_KEY || API_KEY.includes("PASTE_YOUR_KEY")) {
+        throw new Error("API Key Missing");
+      }
+      const genAI = new GoogleGenerativeAI(API_KEY);
+      const model = genAI.getGenerativeModel({ 
+        model: "gemini-pro",
+        systemInstruction: "You are a Senior Field Engineer for Gilchrist Construction Company. You answer questions about civil engineering, construction materials (specifically Soil Cement, Lime, Asphalt, and Concrete), and LADOTD specifications (TR procedures). Be concise, professional, and direct. Do not use markdown bolding too much. Focus on the facts."
+      });
+      
+      const result = await model.generateContent(userMsg);
+      const response = result.response;
+      const text = response.text();
+      
+      setMessages(prev => [...prev, { role: 'model', text: text }]);
+    } catch (error) {
+      console.error("Gemini Error:", error);
+      setMessages(prev => [...prev, { role: 'model', text: "Error: Check your API Key or Internet Connection. (Demo Mode Active)" }]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  // ------------------------------
+
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
+  return (
+    <div className="h-[600px] flex flex-col bg-zinc-900 rounded-xl border border-zinc-800 overflow-hidden shadow-2xl">
+      <div className="p-4 border-b border-zinc-800 flex justify-between items-center bg-black"><h3 className="font-bold text-white text-sm uppercase tracking-wider">Field Engineer AI</h3></div>
+      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+        {messages.map((msg, idx) => (
+          <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+            <div className={`max-w-[85%] p-4 rounded-2xl text-sm font-medium leading-relaxed ${msg.role === 'user' ? 'bg-green-600 text-white' : 'bg-zinc-800 text-zinc-300'}`}>{msg.text}</div>
+          </div>
+        ))}
+        {isLoading && <div className="flex justify-start"><div className="bg-zinc-800 p-3 rounded-2xl text-xs text-zinc-500 animate-pulse">Thinking...</div></div>}
+        <div ref={chatEndRef} />
+      </div>
+      <div className="p-4 border-t border-zinc-800 bg-black flex gap-2">
+          <input type="text" value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleSend()} className="flex-1 px-4 py-3 bg-zinc-950 border border-zinc-800 rounded-xl text-sm text-white font-bold focus:outline-none focus:border-green-600" placeholder="Ask about TR-418, density, or yield..." />
+          <button onClick={handleSend} disabled={isLoading} className="bg-green-600 text-white p-3 rounded-xl font-bold hover:bg-green-500 transition-colors disabled:opacity-50">SEND</button>
+      </div>
+    </div>
+  );
+}
+
 // --- 5. MAIN APP COMPONENT ---
 
 export default function App() {
@@ -864,7 +881,7 @@ export default function App() {
   const [activeModal, setActiveModal] = useState(null);
 
   const [soilSegments, setSoilSegments] = useState([]);
-  const [currentSoil, setCurrentSoil] = useState({ id: Date.now(), length: '', width: '', depth: '', density: 120, material: 'Cement', percent: 6, photo: null });
+  const [currentSoil, setCurrentSoil] = useState({ id: Date.now(), length: '', width: '', depth: '', density: 94, material: 'Cement', percent: 6, photo: null });
   const [asphaltSegments, setAsphaltSegments] = useState([]);
   const [currentAsphalt, setCurrentAsphalt] = useState({ id: Date.now(), length: '', width: '', thickness: '', density: 110, truckCapacity: 22, photo: null });
 
