@@ -1,136 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 
-<<<<<<< HEAD
-// Views
-import DashboardView from "./views/DashboardView.jsx";
-import AsphaltLotManagerView from "./views/AsphaltLotManagerView.jsx";
-import ConcretePourLogView from "./views/ConcretePourLogView.jsx";
-import MaterialTestsView from "./views/MaterialTestsView.jsx";
-import SamplingLibraryView from "./views/SamplingLibraryView.jsx";
-import TestLibraryView from "./views/TestLibraryView.jsx";
-import QCWorkflowView from "./views/QCWorkflowView.jsx";
-import SafetyView from "./views/SafetyBriefingView.jsx";
-import DailyLogView from "./views/DailyQCLogView.jsx";
-import InspectionsView from "./views/InspectionsView.jsx";
-import ResourcesView from "./views/LADOTDResources.jsx";
-import AIView from "./views/AIAssistantView.jsx";
-import HistoryView from "./views/ReportHistoryView.jsx";
-
-// Modals
-import TestModal from "./modals/TestModal.jsx";
-
-// Data
-import { load, save } from "./data/storage.js";
-
-export default function App() {
-  const [view, setView] = useState("dashboard");
-
-  const [tests, setTests] = useState(load("tests", []));
-  const [asphaltLots, setAsphaltLots] = useState(load("asphaltLots", []));
-  const [concretePours, setConcretePours] = useState(load("concretePours", []));
-
-  const [showTestModal, setShowTestModal] = useState(false);
-
-  const addTest = (test) => {
-    const updated = [...tests, test];
-    setTests(updated);
-    save("tests", updated);
-  };
-
-  const deleteTest = (id) => {
-    const updated = tests.filter((t) => t.id !== id);
-    setTests(updated);
-    save("tests", updated);
-  };
-
-  const renderView = () => {
-    switch (view) {
-      case "dashboard":
-        return <DashboardView setView={setView} />;
-
-      case "asphalt":
-        return (
-          <AsphaltLotManagerView
-            data={asphaltLots}
-            setData={setAsphaltLots}
-          />
-        );
-
-      case "concrete":
-        return (
-          <ConcretePourLogView
-            data={concretePours}
-            setData={setConcretePours}
-          />
-        );
-
-      case "tests":
-        return (
-          <MaterialTestsView
-            data={tests}
-            onDelete={deleteTest}
-            onOpenModal={() => setShowTestModal(true)}
-          />
-        );
-
-      case "sampling":
-        return <SamplingLibraryView />;
-
-      case "library":
-        return <TestLibraryView />;
-
-      case "workflow":
-        return <QCWorkflowView />;
-
-      case "safety":
-        return <SafetyView />;
-
-      case "daily":
-        return <DailyLogView />;
-
-      case "inspections":
-        return <InspectionsView />;
-
-      case "resources":
-        return <ResourcesView />;
-
-      case "ai":
-        return <AIView />;
-
-      case "history":
-        return <HistoryView />;
-
-      default:
-        return <DashboardView setView={setView} />;
-    }
-  };
-
-  return (
-    <div className="app-container">
-      <aside className="sidebar">
-        <button onClick={() => setView("dashboard")}>Dashboard</button>
-        <button onClick={() => setView("asphalt")}>Asphalt LOTs</button>
-        <button onClick={() => setView("concrete")}>Concrete Pours</button>
-        <button onClick={() => setView("tests")}>Material Tests</button>
-        <button onClick={() => setView("sampling")}>Sampling Library</button>
-        <button onClick={() => setView("library")}>Test Library</button>
-        <button onClick={() => setView("workflow")}>QC Workflow</button>
-        <button onClick={() => setView("safety")}>Safety</button>
-        <button onClick={() => setView("daily")}>Daily Log</button>
-        <button onClick={() => setView("inspections")}>Inspections</button>
-        <button onClick={() => setView("resources")}>Resources</button>
-        <button onClick={() => setView("ai")}>AI</button>
-        <button onClick={() => setView("history")}>History</button>
-      </aside>
-
-      <main className="main-content">{renderView()}</main>
-
-      {showTestModal && (
-        <TestModal
-          onClose={() => setShowTestModal(false)}
-          onSave={addTest}
-        />
-=======
 // --- CONFIGURATION ---
 const API_KEY = "AIzaSyDJtsc49v4_-Ru3PoOfd-Gq6KKnsYVT9CY"; 
 
@@ -306,86 +175,83 @@ function SoilCalcView({ segments, addSegment, removeSegment, current, setCurrent
         <button onClick={addSegment} className="w-full bg-green-600 hover:bg-green-500 text-white font-black uppercase text-sm py-4 rounded-lg mt-4 transition-all shadow-lg transform active:scale-95">Add to List</button>
       </div>
       {segments.length > 0 && (
-         <div className="bg-black border-2 border-green-600 rounded-xl overflow-hidden shadow-2xl print:w-full print:absolute print:top-0 print:left-0 print:z-50">
-            <div className="p-6 border-b-2 border-green-600 bg-black flex justify-between items-center"><div className="flex items-center gap-4"><img src="/Gilchrist_Logo.png" alt="GILCHRIST" className="h-12 object-contain" onError={(e) => e.target.style.display='none'}/><div><h3 className="font-black text-white text-xl uppercase tracking-tighter leading-none">Soil & Lime Report</h3><p className="text-green-500 text-xs font-bold uppercase tracking-widest mt-1">Material Stabilization</p></div></div><div className="print:hidden"><button onClick={() => window.print()} className="flex items-center gap-2 text-[10px] font-bold uppercase text-black bg-white px-4 py-2 rounded hover:bg-gray-200 transition-colors"><Icons.Printer size={14}/> Print Report</button></div></div>
-            {segments.map(seg => {
-                const res = calculate(seg);
-                return (
-                    <div key={seg.id} className="p-6 border-b border-zinc-800 grid grid-cols-1 md:grid-cols-12 gap-6 items-center bg-black">
-                        <div className="md:col-span-4"><span className="block font-black text-2xl text-white uppercase mb-1">{seg.material} {seg.percent}%</span><span className="inline-block text-[10px] bg-green-900/30 text-green-400 px-2 py-1 rounded border border-green-900 uppercase font-bold tracking-wider">Station {seg.startStation || '0'} to {seg.endStation || '0'}</span>{seg.photo && <img src={seg.photo} className="mt-2 h-16 w-16 object-cover rounded border border-green-900" />}</div>
-                        <div className="md:col-span-5"><p className="text-sm text-zinc-300 font-bold font-mono mb-2">Dims: {seg.length}'(L) x {seg.width}'(W) x {seg.depth}"(D)</p><p className="text-sm text-zinc-500 font-mono font-bold"><span className="text-zinc-600">Formula:</span> {res.volumeCF.toFixed(1)}cf × {seg.density}pcf × {seg.percent/100} = <span className="text-white font-black text-lg">{Math.round(res.totalLbs).toLocaleString()} lbs</span></p></div>
-                        <div className="md:col-span-2 text-right"><p className="font-black text-4xl text-green-500 leading-none tracking-tighter">{res.tons.toFixed(2)}</p><p className="text-[10px] font-black text-zinc-500 uppercase tracking-widest mt-1">TONS</p><p className="text-[10px] text-zinc-400 mt-1">Rate: <span className="text-white font-bold">{res.spreadRate.toFixed(1)}</span> lb/sy</p></div>
-                        <div className="md:col-span-1 text-right print:hidden"><button onClick={() => removeSegment(seg.id)} className="p-2 text-zinc-600 hover:text-red-500 transition-colors"><Icons.Trash2 size={20}/></button></div>
-                    </div>
-                )
-            })}
-            <div className="p-8 bg-zinc-900 border-t-2 border-green-600 flex justify-between items-center"><span className="text-green-500 font-black uppercase text-sm tracking-widest">Job Total Requirement</span><span className="text-5xl font-black text-white tracking-tighter">{totalTons.toFixed(2)} <span className="text-2xl text-zinc-500">TONS</span></span></div>
-         </div>
->>>>>>> 599edb43d3d162a2829fe56b128f67968483981d
+   <div className="bg-black border-2 border-green-600 rounded-xl overflow-hidden shadow-2xl print:w-full print:absolute print:top-0 print:left-0 print:z-50">
+      <div className="p-6 border-b-2 border-green-600 bg-black flex justify-between items-center"><div className="flex items-center gap-4"><img src="/Gilchrist_Logo.png" alt="GILCHRIST" className="h-12 object-contain" onError={(e) => e.target.style.display='none'}/><div><h3 className="font-black text-white text-xl uppercase tracking-tighter leading-none">Soil & Lime Report</h3><p className="text-green-500 text-xs font-bold uppercase tracking-widest mt-1">Material Stabilization</p></div></div><div className="print:hidden"><button onClick={() => window.print()} className="flex items-center gap-2 text-[10px] font-bold uppercase text-black bg-white px-4 py-2 rounded hover:bg-gray-200 transition-colors"><Icons.Printer size={14}/> Print Report</button></div></div>
+      {segments.map(seg => {
+          const res = calculate(seg);
+          return (
+              <div key={seg.id} className="p-6 border-b border-zinc-800 grid grid-cols-1 md:grid-cols-12 gap-6 items-center bg-black">
+                  <div className="md:col-span-4"><span className="block font-black text-2xl text-white uppercase mb-1">{seg.material} {seg.percent}%</span><span className="inline-block text-[10px] bg-green-900/30 text-green-400 px-2 py-1 rounded border border-green-900 uppercase font-bold tracking-wider">Station {seg.startStation || '0'} to {seg.endStation || '0'}</span>{seg.photo && <img src={seg.photo} className="mt-2 h-16 w-16 object-cover rounded border border-green-900" />}</div>
+                  <div className="md:col-span-5"><p className="text-sm text-zinc-300 font-bold font-mono mb-2">Dims: {seg.length}'(L) x {seg.width}'(W) x {seg.depth}"(D)</p><p className="text-sm text-zinc-500 font-mono font-bold"><span className="text-zinc-600">Formula:</span> {res.volumeCF.toFixed(1)}cf × {seg.density}pcf × {seg.percent/100} = <span className="text-white font-black text-lg">{Math.round(res.totalLbs).toLocaleString()} lbs</span></p></div>
+                  <div className="md:col-span-2 text-right"><p className="font-black text-4xl text-green-500 leading-none tracking-tighter">{res.tons.toFixed(2)}</p><p className="text-[10px] font-black text-zinc-500 uppercase tracking-widest mt-1">TONS</p><p className="text-[10px] text-zinc-400 mt-1">Rate: <span className="text-white font-bold">{res.spreadRate.toFixed(1)}</span> lb/sy</p></div>
+                  <div className="md:col-span-1 text-right print:hidden"><button onClick={() => removeSegment(seg.id)} className="p-2 text-zinc-600 hover:text-red-500 transition-colors"><Icons.Trash2 size={20}/></button></div>
+              </div>
+          )
+      })}
+      <div className="p-8 bg-zinc-900 border-t-2 border-green-600 flex justify-between items-center"><span className="text-green-500 font-black uppercase text-sm tracking-widest">Job Total Requirement</span><span className="text-5xl font-black text-white tracking-tighter">{totalTons.toFixed(2)} <span className="text-2xl text-zinc-500">TONS</span></span></div>
+        </div>
       )}
     </div>
   );
 }
-<<<<<<< HEAD
-=======
 
 function AsphaltCalcView({ segments, addSegment, removeSegment, current, setCurrent }) {
-    const fileInputRef = useRef(null);
-    useEffect(() => {
-        if (current.startStation && current.endStation) {
-            const dist = Math.abs(parseStation(current.endStation) - parseStation(current.startStation));
-            if (!isNaN(dist)) setCurrent(prev => ({ ...prev, length: dist }));
-        }
-    }, [current.startStation, current.endStation]);
-    const handlePhotoSelect = (e) => { if (e.target.files?.[0]) setCurrent({ ...current, photo: URL.createObjectURL(e.target.files[0]) }); };
-    const calculate = (seg) => {
-        const l = parseFloat(seg.length)||0; const w = parseFloat(seg.width)||0; const t = parseFloat(seg.thickness)||0; const rate = parseFloat(seg.density)||110;
-        const sy = (l * w) / 9; const totalLbs = sy * t * rate; const tons = totalLbs / 2000;
-        return { sy, tons, totalLbs };
-    };
-    const totalTons = segments.reduce((acc, s) => acc + calculate(s).tons, 0);
+  const fileInputRef = useRef(null);
+  useEffect(() => {
+    if (current.startStation && current.endStation) {
+      const dist = Math.abs(parseStation(current.endStation) - parseStation(current.startStation));
+      if (!isNaN(dist)) setCurrent(prev => ({ ...prev, length: dist }));
+    }
+  }, [current.startStation, current.endStation]);
+  const handlePhotoSelect = (e) => { if (e.target.files?.[0]) setCurrent({ ...current, photo: URL.createObjectURL(e.target.files[0]) }); };
+  const calculate = (seg) => {
+    const l = parseFloat(seg.length)||0; const w = parseFloat(seg.width)||0; const t = parseFloat(seg.thickness)||0; const rate = parseFloat(seg.density)||110;
+    const sy = (l * w) / 9; const totalLbs = sy * t * rate; const tons = totalLbs / 2000;
+    return { sy, tons, totalLbs };
+  };
+  const totalTons = segments.reduce((acc, s) => acc + calculate(s).tons, 0);
 
-    return (
-        <div className="space-y-6 animate-in slide-in-from-bottom-4">
-            <div className="flex justify-between items-center border-b border-zinc-800 pb-4 print:hidden"><h2 className="text-3xl font-black text-white uppercase tracking-tighter">Asphalt Yield</h2><div className="text-xs bg-zinc-900 border border-zinc-800 px-3 py-1 rounded text-zinc-500 font-mono">Factor: 110 lb/sy-in</div></div>
-            <div className="bg-zinc-900 border border-zinc-800 p-6 rounded-xl shadow-lg print:hidden">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-4">
-                         <div className="grid grid-cols-2 gap-4 bg-black p-4 rounded-lg border border-zinc-800"><InputField label="START STATION" placeholder="100+00" value={current.startStation || ''} onChange={(v) => setCurrent({...current, startStation: v})} /><InputField label="END STATION" placeholder="110+00" value={current.endStation || ''} onChange={(v) => setCurrent({...current, endStation: v})} /></div>
-                        <InputField label="CALCULATED LENGTH (FT)" value={current.length} onChange={(v) => setCurrent({...current, length: v})} />
-                        <InputField label="WIDTH (FT)" value={current.width} onChange={(v) => setCurrent({...current, width: v})} />
-                        <InputField label="THICKNESS (IN)" value={current.thickness} onChange={(v) => setCurrent({...current, thickness: v})} />
-                    </div>
-                    <div>
-                        <InputField label="YIELD (LBS/SY-IN)" value={current.density} onChange={(v) => setCurrent({...current, density: v})} />
-                        <div className="mt-4 p-8 bg-black rounded-xl text-center border border-zinc-800 h-64 flex flex-col justify-center"><p className="text-xs font-bold text-zinc-500 uppercase mb-2 tracking-widest">Estimated Tonnage</p><p className="text-5xl font-black text-white">{calculate(current).tons.toFixed(2)}</p><p className="text-sm text-zinc-500 mt-4 font-bold">Trucks ({current.truckCapacity}t): <span className="text-white">{Math.ceil(calculate(current).tons / current.truckCapacity)}</span></p></div>
-                    </div>
-                </div>
-                <div className="mb-4 mt-4"><input type="file" accept="image/*" ref={fileInputRef} onChange={handlePhotoSelect} className="hidden" /><button onClick={() => fileInputRef.current.click()} className={`w-full py-3 rounded-lg border-2 border-dashed flex items-center justify-center gap-2 transition-colors ${current.photo ? 'border-green-600 text-green-500 bg-green-900/20' : 'border-zinc-700 text-zinc-500 hover:border-zinc-500'}`}><Icons.Camera size={20} /><span className="font-bold text-xs uppercase">{current.photo ? "Photo Attached" : "Attach Photo"}</span></button></div>
-                <button onClick={addSegment} className="w-full bg-green-600 hover:bg-green-500 text-white font-black uppercase text-sm py-4 rounded-lg mt-4 transition-all shadow-lg transform active:scale-95">Add Pull to List</button>
-            </div>
-            {segments.length > 0 && (
-                <div className="bg-black border-2 border-green-600 rounded-xl overflow-hidden shadow-2xl print:w-full print:absolute print:top-0 print:left-0 print:z-50">
-                   <div className="p-6 border-b-2 border-green-600 bg-black flex justify-between items-center"><div className="flex items-center gap-4"><img src="/Gilchrist_Logo.png" alt="GILCHRIST" className="h-12 object-contain" onError={(e) => e.target.style.display='none'}/><div><h3 className="font-black text-white text-xl uppercase tracking-tighter leading-none">Paving Schedule</h3><p className="text-green-500 text-xs font-bold uppercase tracking-widest mt-1">Asphalt Yield Report</p></div></div><div className="print:hidden"><button onClick={() => window.print()} className="flex items-center gap-2 text-[10px] font-bold uppercase text-black bg-white px-4 py-2 rounded hover:bg-gray-200 transition-colors"><Icons.Printer size={14}/> Print Report</button></div></div>
-                   {segments.map(seg => {
-                       const res = calculate(seg);
-                       return (
-                           <div key={seg.id} className="p-6 border-b border-zinc-800 grid grid-cols-1 md:grid-cols-12 gap-6 items-center bg-black">
-                               <div className="md:col-span-4"><span className="block font-black text-2xl text-white uppercase mb-1">HMA Paving</span><span className="inline-block text-[10px] bg-green-900/30 text-green-400 px-2 py-1 rounded border border-green-900 uppercase font-bold tracking-wider">Station {seg.startStation || '0'} to {seg.endStation || '0'}</span>{seg.photo && <img src={seg.photo} className="mt-2 h-16 w-16 object-cover rounded border border-green-900" />}</div>
-                               <div className="md:col-span-5"><p className="text-sm text-zinc-300 font-bold font-mono mb-2">Dims: {seg.length}'(L) x {seg.width}'(W) x {seg.thickness}"(T)</p><p className="text-sm text-zinc-500 font-mono font-bold"><span className="text-zinc-600">Formula:</span> {res.sy.toFixed(1)}sy × {seg.thickness}" × {seg.density} = <span className="text-white font-black text-lg">{Math.round(res.totalLbs).toLocaleString()} lbs</span></p></div>
-                               <div className="md:col-span-2 text-right"><p className="font-black text-4xl text-green-500 leading-none tracking-tighter">{res.tons.toFixed(2)}</p><p className="text-[10px] font-black text-zinc-500 uppercase tracking-widest mt-1">TONS</p></div>
-                               <div className="md:col-span-1 text-right print:hidden"><button onClick={() => removeSegment(seg.id)} className="p-2 text-zinc-600 hover:text-red-500 transition-colors"><Icons.Trash2 size={20}/></button></div>
-                           </div>
-                       )
-                   })}
-                   <div className="p-8 bg-zinc-900 border-t-2 border-green-600 flex justify-between items-center"><span className="text-green-500 font-black uppercase text-sm tracking-widest">Total Tonnage</span><span className="text-5xl font-black text-white tracking-tighter">{totalTons.toFixed(2)} <span className="text-2xl text-zinc-500">TONS</span></span></div>
-                </div>
-            )}
+  return (
+    <div className="space-y-6 animate-in slide-in-from-bottom-4">
+      <style>{`@media print { body, html, #root { background-color: #000 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; color: white !important; } .print\\:hidden { display: none !important; } .print\\:block { display: block !important; } .print\\:bg-black { background-color: #000 !important; } .print\\:text-white { color: #fff !important; } }`}</style>
+      <div className="print:hidden"><div className="flex justify-between items-center border-b border-zinc-800 pb-4 mb-4"><h2 className="text-3xl font-black text-white uppercase tracking-tighter">Asphalt Yield</h2><div className="text-xs bg-zinc-900 border border-zinc-800 px-3 py-1 rounded text-zinc-500 font-mono">Factor: 110 lb/sy-in</div></div></div>
+      <div className="bg-zinc-900 border border-zinc-800 p-6 rounded-xl shadow-lg print:hidden">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-4 bg-black p-4 rounded-lg border border-zinc-800"><InputField label="START STATION" placeholder="100+00" value={current.startStation || ''} onChange={(v) => setCurrent({...current, startStation: v})} /><InputField label="END STATION" placeholder="110+00" value={current.endStation || ''} onChange={(v) => setCurrent({...current, endStation: v})} /></div>
+            <InputField label="CALCULATED LENGTH (FT)" value={current.length} onChange={(v) => setCurrent({...current, length: v})} readOnly className="opacity-75" />
+            <InputField label="WIDTH (FT)" value={current.width} onChange={(v) => setCurrent({...current, width: v})} />
+            <InputField label="THICKNESS (IN)" value={current.thickness} onChange={(v) => setCurrent({...current, thickness: v})} />
+          </div>
+          <div>
+            <InputField label="YIELD (LBS/SY-IN)" value={current.density} onChange={(v) => setCurrent({...current, density: v})} />
+            <div className="mt-4 p-8 bg-black rounded-xl text-center border border-zinc-800 h-64 flex flex-col justify-center"><p className="text-xs font-bold text-zinc-500 uppercase mb-2 tracking-widest">Estimated Tonnage</p><p className="text-5xl font-black text-white">{calculate(current).tons.toFixed(2)}</p><p className="text-sm text-zinc-500 mt-4 font-bold">Trucks ({current.truckCapacity}t): <span className="text-white">{Math.ceil(calculate(current).tons / current.truckCapacity)}</span></p></div>
+          </div>
         </div>
-    );
+        <div className="mb-4 mt-4"><input type="file" accept="image/*" ref={fileInputRef} onChange={handlePhotoSelect} className="hidden" /><button onClick={() => fileInputRef.current.click()} className={`w-full py-3 rounded-lg border-2 border-dashed flex items-center justify-center gap-2 transition-colors ${current.photo ? 'border-green-600 text-green-500 bg-green-900/20' : 'border-zinc-700 text-zinc-500 hover:border-zinc-500'}`}><Icons.Camera size={20} /><span className="font-bold text-xs uppercase">{current.photo ? "Photo Attached" : "Attach Photo"}</span></button></div>
+        <button onClick={addSegment} className="w-full bg-green-600 hover:bg-green-500 text-white font-black uppercase text-sm py-4 rounded-lg mt-4 transition-all shadow-lg transform active:scale-95">Add Pull to List</button>
+      </div>
+      {segments.length > 0 && (
+        <div className="bg-black border-2 border-green-600 rounded-xl overflow-hidden shadow-2xl print:w-full print:absolute print:top-0 print:left-0 print:z-50">
+          <div className="p-6 border-b-2 border-green-600 bg-black flex justify-between items-center"><div className="flex items-center gap-4"><img src="/Gilchrist_Logo.png" alt="GILCHRIST" className="h-12 object-contain" onError={(e) => e.target.style.display='none'}/><div><h3 className="font-black text-white text-xl uppercase tracking-tighter leading-none">Paving Schedule</h3><p className="text-green-500 text-xs font-bold uppercase tracking-widest mt-1">Asphalt Yield Report</p></div></div><div className="print:hidden"><button onClick={() => window.print()} className="flex items-center gap-2 text-[10px] font-bold uppercase text-black bg-white px-4 py-2 rounded hover:bg-gray-200 transition-colors"><Icons.Printer size={14}/> Print Report</button></div></div>
+          {segments.map(seg => {
+            const res = calculate(seg);
+            return (
+              <div key={seg.id} className="p-6 border-b border-zinc-800 grid grid-cols-1 md:grid-cols-12 gap-6 items-center bg-black">
+                <div className="md:col-span-4"><span className="block font-black text-2xl text-white uppercase mb-1">HMA Paving</span><span className="inline-block text-[10px] bg-green-900/30 text-green-400 px-2 py-1 rounded border border-green-900 uppercase font-bold tracking-wider">Station {seg.startStation || '0'} to {seg.endStation || '0'}</span>{seg.photo && <img src={seg.photo} className="mt-2 h-16 w-16 object-cover rounded border border-green-900" />}</div>
+                <div className="md:col-span-5"><p className="text-sm text-zinc-300 font-bold font-mono mb-2">Dims: {seg.length}'(L) x {seg.width}'(W) x {seg.thickness}"(T)</p><p className="text-sm text-zinc-500 font-mono font-bold"><span className="text-zinc-600">Formula:</span> {res.sy.toFixed(1)}sy × {seg.thickness}" × {seg.density} = <span className="text-white font-black text-lg">{Math.round(res.totalLbs).toLocaleString()} lbs</span></p></div>
+                <div className="md:col-span-2 text-right"><p className="font-black text-4xl text-green-500 leading-none tracking-tighter">{res.tons.toFixed(2)}</p><p className="text-[10px] font-black text-zinc-500 uppercase tracking-widest mt-1">TONS</p></div>
+                <div className="md:col-span-1 text-right print:hidden"><button onClick={() => removeSegment(seg.id)} className="p-2 text-zinc-600 hover:text-red-500 transition-colors"><Icons.Trash2 size={20}/></button></div>
+              </div>
+            )
+          })}
+          <div className="p-8 bg-zinc-900 border-t-2 border-green-600 flex justify-between items-center"><span className="text-green-500 font-black uppercase text-sm tracking-widest">Total Tonnage</span><span className="text-5xl font-black text-white tracking-tighter">{totalTons.toFixed(2)} <span className="text-2xl text-zinc-500">TONS</span></span></div>
+        </div>
+      )}
+    </div>
+  );
 }
-
-function InspectionsView({ data, onDelete, onGenerateReport, onOpenModal }) {
+function InspectionsView({ data, onDelete, onOpenModal }) {
   const [filter, setFilter] = useState('ALL');
   const filteredData = filter === 'ALL' ? data : data.filter(i => i.category.toUpperCase().includes(filter));
   return (
@@ -449,18 +315,24 @@ function MaterialTestsView({ data, onDelete, onOpenModal }) {
 
 function LADOTDResources() {
   const categories = [
-    { title: "Materials & Testing", desc: "TR Procedures Manual", url: "https://dotd.la.gov/about/office-of-project-delivery/engineering/materials-and-testing/testing-procedure-manual/", icon: <Icons.FlaskConical className="text-green-500" size={24} /> },
-    { title: "Construction", desc: "Specs & Manuals", url: "https://dotd.la.gov/about/office-of-project-delivery/engineering/construction/", icon: <Icons.HardHat className="text-green-500" size={24} /> },
     { title: "Embankment & Basecourse", desc: "Geotechnical Manuals", url: "https://dotd.la.gov/about/office-of-project-delivery/engineering/materials-and-testing/quality-assurance-manuals/", icon: <Icons.Construction className="text-green-500" size={24} /> },
-    { title: "Bridge Design", desc: "Design Documents", url: "https://dotd.la.gov/about/office-of-project-delivery/engineering/bridge-and-structural-design/bridge-design-documents/", icon: <Icons.Ruler className="text-green-500" size={24} /> },
-    { title: "Asphalt Pavements", desc: "QA Manual (2018)", url: "https://dotd.la.gov/media/gaeknov2/qa-manual-for-asphalt-pavements-2018-spec-revision.pdf", icon: <Icons.LayoutDashboard className="text-green-500" size={24} /> }
+    { title: "Embankment & Basecourse", desc: "Geotechnical Manuals", url: "https://dotd.la.gov/about/office-of-project-delivery/engineering/materials-and-testing/quality-assurance-manuals/", icon: <Icons.Construction className="text-green-500" size={24} /> },
   ];
+  
   return (
     <div className="space-y-6">
       <h2 className="text-2xl font-black text-white uppercase tracking-tighter">LADOTD Resources</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {categories.map((cat, idx) => (
-          <a key={idx} href={cat.url} target="_blank" rel="noreferrer" className="bg-zinc-900 p-5 rounded-xl border border-zinc-800 flex items-center gap-5 hover:border-green-600 transition-colors cursor-pointer group"><div className="p-3 bg-black rounded-lg group-hover:bg-green-900/20 transition-colors">{cat.icon}</div><div><h3 className="font-bold text-white text-base">{cat.title}</h3><p className="text-sm text-zinc-500 font-bold">{cat.desc}</p></div><Icons.ExternalLink className="ml-auto text-zinc-600 group-hover:text-white" size={16}/></a>
+          <a key={idx} href={cat.url} target="_blank" rel="noopener noreferrer" className="bg-zinc-900 border border-zinc-800 p-6 rounded-xl hover:border-green-600 transition-colors">
+            <div className="flex items-start gap-4">
+              <div>{cat.icon}</div>
+              <div>
+                <h3 className="font-bold text-white text-lg">{cat.title}</h3>
+                <p className="text-xs text-zinc-500 mt-1">{cat.desc}</p>
+              </div>
+            </div>
+          </a>
         ))}
       </div>
     </div>
@@ -523,6 +395,29 @@ function DashboardView({ stats, setActiveTab, openModal }) {
 }
 
 // --- MAIN APP ---
+/**
+ * Main application component for the Gilchrist QC App.
+ * 
+ * Manages the central state for inspections, material tests, soil/asphalt calculations,
+ * and AI assistant communication. Renders different views based on active tab selection.
+ * 
+ * @component
+ * @returns {JSX.Element} The main app container with header, navigation, and dynamic content views.
+ * 
+ * @state {string} activeTab - Current active tab ('dashboard', 'soilcalc', 'asphaltcalc', 'inspections', 'tests', 'forms', 'ai')
+ * @state {Array} inspections - List of saved inspection records
+ * @state {Array} tests - List of saved material test records
+ * @state {string|null} activeModal - Currently open modal type ('inspection', 'test', or null)
+ * @state {Array} soilSegments - Collection of soil calculation segments
+ * @state {Object} currentSoil - Current soil segment being edited (id, length, width, depth, density, material, percent, photo)
+ * @state {Array} asphaltSegments - Collection of asphalt calculation segments
+ * @state {Object} currentAsphalt - Current asphalt segment being edited (id, length, width, thickness, density, truckCapacity, photo)
+ * @state {Array} aiMessages - Chat messages with AI assistant
+ * 
+ * @function renderContent - Conditionally renders view component based on activeTab
+ * @function handleSaveInspection - Saves new inspection and closes modal
+ * @function handleSaveTest - Saves new test and closes modal
+ */
 export default function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [inspections, setInspections] = useState(INITIAL_INSPECTIONS);
@@ -569,5 +464,3 @@ export default function App() {
       {activeModal === 'test' && <TestModal onClose={() => setActiveModal(null)} onSave={handleSaveTest} />}
     </div>
   );
-}
->>>>>>> 599edb43d3d162a2829fe56b128f67968483981d
